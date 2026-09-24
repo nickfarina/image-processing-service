@@ -27,6 +27,13 @@ const alphaPixels = Buffer.from([
   255, 0, 0, 255, 0, 255, 0, 128,
   0, 0, 255, 0, 255, 255, 255, 255,
 ]);
+const detailPixels = Buffer.alloc(256 * 256 * 3);
+let seed = 42;
+for (let index = 0; index < detailPixels.length; index += 1) {
+  seed = (seed * 1664525 + 1013904223) >>> 0;
+  detailPixels[index] = seed & 0xff;
+}
+const detailSource = await sharp(detailPixels, { raw: { width: 256, height: 256, channels: 3 } }).png().toBuffer();
 const alphaSource = await sharp(alphaPixels, { raw: { width: 2, height: 2, channels: 4 } }).png().toBuffer();
 
 await sharp(source).toFile(fileURLToPath(new URL('landscape.png', fixtureDirectory)));
@@ -47,6 +54,7 @@ await sharp(source)
 await sharp(source).jpeg({ quality: 80 }).toFile(fileURLToPath(new URL('landscape-quality-80.jpeg', fixtureDirectory)));
 await sharp(source).webp({ quality: 80 }).toFile(fileURLToPath(new URL('landscape-quality-80.webp', fixtureDirectory)));
 await sharp(alphaSource).toFile(fileURLToPath(new URL('alpha.png', fixtureDirectory)));
+await sharp(detailSource).toFile(fileURLToPath(new URL('detail.png', fixtureDirectory)));
 await sharp(source).resize({ width: 201, height: 201, fit: 'inside' }).png().toFile(fileURLToPath(new URL('landscape-odd-fit-201.png', fixtureDirectory)));
 await sharp(alphaSource).flatten({ background: '#ffffff' }).jpeg().toFile(fileURLToPath(new URL('alpha-white.jpeg', fixtureDirectory)));
 const orientationSource = await readFile(new URL('orientation-6.jpeg', fixtureDirectory));

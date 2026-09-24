@@ -82,6 +82,15 @@ describe('transformImage', () => {
     expect(output.contentType).toBe(`image/${format}`);
   });
 
+  it.each(['jpeg', 'webp'] as const)('uses less output data at lower %s quality', async (format) => {
+    const source = await fixture('detail.png');
+    const low = await transformImage(source, { url: new URL('https://images.example.com/detail.png'), format, quality: 30 });
+    const high = await transformImage(source, { url: new URL('https://images.example.com/detail.png'), format, quality: 90 });
+    expect((await sharp(low.body).metadata()).width).toBe(256);
+    expect((await sharp(high.body).metadata()).height).toBe(256);
+    expect(low.body.byteLength).toBeLessThan(high.body.byteLength);
+  });
+
   it('returns a controlled error for corrupt image data', async () => {
     await expect(
       transformImage(await fixture('corrupt-image.bin'), {
