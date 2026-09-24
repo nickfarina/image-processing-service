@@ -80,7 +80,7 @@ docker run --rm -p 3000:3000 image-service
 
 ## Test fixtures
 
-`test/fixtures` contains a deterministic colored landscape source, golden resize/crop/conversion images, and corrupt bytes. Tests compare decoded metadata and pixels where exact visual correctness matters. Regenerate the image fixtures with:
+`test/fixtures` contains deterministic source images, expected transformation outputs, and failure fixtures. See the [fixture catalog](test/fixtures/README.md) for visual source-to-output examples, exact request semantics, and what each asset proves. Tests compare decoded metadata and pixels where exact visual correctness matters. Regenerate the image fixtures with:
 
 ```sh
 npm run generate:fixtures
