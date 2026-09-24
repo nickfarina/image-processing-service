@@ -22,6 +22,14 @@ async function expectSamePixels(actual: Buffer, expected: Buffer): Promise<void>
 }
 
 describe('transformImage', () => {
+  it.each([
+    ['portrait.png', 'portrait-fit-200.png', { width: 200, height: 200 }],
+    ['portrait.png', 'portrait-fill-200.png', { width: 200, height: 200, crop: 'fill' as const }],
+    ['square.png', 'square-fit-100.png', { width: 100, height: 100 }],
+  ])('matches the %s geometry golden', async (source, expected, options) => {
+    const output = await transformImage(await fixture(source), { url: new URL('https://images.example.com/source.png'), ...options });
+    await expectSamePixels(output.body, await fixture(expected));
+  });
   it('fits an image inside both requested dimensions without distorting it', async () => {
     const output = await transformImage(await fixture('landscape.png'), {
       url: new URL('https://images.example.com/landscape.png'),

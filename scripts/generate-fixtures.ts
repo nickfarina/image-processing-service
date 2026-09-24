@@ -21,6 +21,8 @@ for (let y = 0; y < height; y += 1) {
 await mkdir(fixtureDirectory, { recursive: true });
 
 const source = await sharp(pixels, { raw: { width, height, channels: 3 } }).png().toBuffer();
+const portrait = await sharp(pixels, { raw: { width: 200, height: 400, channels: 3 } }).png().toBuffer();
+const square = await sharp(pixels, { raw: { width: 200, height: 200, channels: 3 } }).png().toBuffer();
 const alphaPixels = Buffer.from([
   255, 0, 0, 255, 0, 255, 0, 128,
   0, 0, 255, 0, 255, 255, 255, 255,
@@ -28,6 +30,11 @@ const alphaPixels = Buffer.from([
 const alphaSource = await sharp(alphaPixels, { raw: { width: 2, height: 2, channels: 4 } }).png().toBuffer();
 
 await sharp(source).toFile(fileURLToPath(new URL('landscape.png', fixtureDirectory)));
+await sharp(portrait).toFile(fileURLToPath(new URL('portrait.png', fixtureDirectory)));
+await sharp(portrait).resize({ width: 200, height: 200, fit: 'inside' }).png().toFile(fileURLToPath(new URL('portrait-fit-200.png', fixtureDirectory)));
+await sharp(portrait).resize({ width: 200, height: 200, fit: 'cover', position: 'centre' }).png().toFile(fileURLToPath(new URL('portrait-fill-200.png', fixtureDirectory)));
+await sharp(square).toFile(fileURLToPath(new URL('square.png', fixtureDirectory)));
+await sharp(square).resize({ width: 100, height: 100, fit: 'inside' }).png().toFile(fileURLToPath(new URL('square-fit-100.png', fixtureDirectory)));
 await sharp(source)
   .resize({ width: 200, height: 200, fit: 'inside' })
   .png()
