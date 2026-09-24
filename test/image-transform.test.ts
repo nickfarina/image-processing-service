@@ -66,4 +66,12 @@ describe('transformImage', () => {
     expect(metadata.height).toBe(200);
     expect(output.contentType).toBe(`image/${format}`);
   });
+
+  it('returns a controlled error for corrupt image data', async () => {
+    await expect(
+      transformImage(await fixture('corrupt-image.bin'), {
+        url: new URL('https://images.example.com/corrupt.png'),
+      }),
+    ).rejects.toMatchObject({ code: 'image_processing_failed' });
+  });
 });
