@@ -47,7 +47,7 @@ describe('local upstream integration', () => {
       const response = await app.inject({ method: 'GET', url: `/process?url=${encodeURIComponent(`${baseUrl}/redirect`)}&width=100&height=100&format=webp&quality=80` });
       expect(response.statusCode).toBe(200);
       expect(response.headers['content-type']).toContain('image/webp');
-      expect(response.headers['cache-control']).toBe('public, max-age=3600');
+      expect(response.headers['cache-control']).toBe('private, no-store');
     } finally { await app.close(); }
   });
 });

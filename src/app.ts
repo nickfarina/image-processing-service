@@ -39,7 +39,7 @@ export function buildApp(dependencies: AppDependencies = {}) {
       const image = await fetchImage(options.url);
       const transformed = await limiter.run(() => transform(image.body, options));
       return reply
-        .header('cache-control', 'public, max-age=3600')
+        .header('cache-control', 'private, no-store')
         .type(transformed.contentType)
         .send(transformed.body);
     } catch (error) {

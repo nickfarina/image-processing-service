@@ -42,7 +42,7 @@ curl --get --data-urlencode 'url=https://httpbin.org/image/jpeg' \
   -o image.webp http://localhost:3000/process
 ```
 
-Successful responses are image bytes with the matching `Content-Type` and `Cache-Control: public, max-age=3600`.
+Successful responses are image bytes with the matching `Content-Type` and `Cache-Control: private, no-store`. Shared caching is intentionally a deployment/CDN concern, especially because callers may use signed source URLs.
 
 Errors use this stable JSON contract:
 

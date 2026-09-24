@@ -40,7 +40,7 @@ describe('GET /process', () => {
 
     expect(response.statusCode).toBe(200);
     expect(response.headers['content-type']).toContain('image/png');
-    expect(response.headers['cache-control']).toBe('public, max-age=3600');
+    expect(response.headers['cache-control']).toBe('private, no-store');
     expect((await (await import('sharp')).default(response.rawPayload).metadata()).width).toBe(100);
   });
 
