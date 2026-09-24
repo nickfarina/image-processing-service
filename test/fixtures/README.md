@@ -23,6 +23,10 @@ The source is a 400×200 image: red on the left and blue on the right. Its stron
 | ![Alpha source](alpha.png) | `format=webp` | Alpha remains present; the test verifies decoded alpha metadata. |
 | ![Alpha source](alpha.png) | `format=jpeg` | ![White-composited JPEG](alpha-white.jpeg) — transparency is composited against white. |
 
+## Orientation fixture
+
+`orientation-6.jpeg` is the verified `Landscape_6.jpg` test image from the public [EXIF Orientation Examples](https://github.com/recurser/exif-orientation-examples) corpus. It carries EXIF orientation 6 (90° clockwise); [`orientation-6-upright.jpeg`](orientation-6-upright.jpeg) is the canonical upright result.
+
 ## Failure fixture
 
 `corrupt-image.bin` is deliberately invalid image data. It must return the controlled `422 image_processing_failed` response, never an internal stack trace.

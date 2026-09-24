@@ -83,4 +83,18 @@ describe('transformImage', () => {
     expect((await sharp(webp.body).metadata()).hasAlpha).toBe(true);
     await expectSamePixels(jpeg.body, await fixture('alpha-white.jpeg'));
   });
+
+  it('normalizes EXIF orientation before returning the image', async () => {
+    const output = await transformImage(await fixture('orientation-6.jpeg'), {
+      url: new URL('https://images.example.com/oriented.jpeg'),
+    });
+
+    const metadata = await sharp(output.body).metadata();
+    expect(metadata.width).toBe(1800);
+    expect(metadata.height).toBe(1200);
+    expect(metadata.orientation).toBeUndefined();
+    const expected = await sharp(await fixture('orientation-6-upright.jpeg')).metadata();
+    expect(expected.width).toBe(metadata.width);
+    expect(expected.height).toBe(metadata.height);
+  });
 });

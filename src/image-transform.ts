@@ -25,7 +25,7 @@ export async function transformImage(source: Buffer, options: ProcessOptions): P
     const outputFormat = options.format ?? sourceMetadata.format;
 
     // Normalize phone-camera EXIF orientation before every geometric operation.
-    pipeline.rotate();
+    pipeline.autoOrient();
 
     if (outputFormat === undefined || contentTypeForFormat(outputFormat) === undefined) {
       throw new ImageTransformError(

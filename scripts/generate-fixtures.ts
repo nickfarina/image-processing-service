@@ -1,4 +1,4 @@
-import { mkdir } from 'node:fs/promises';
+import { mkdir, readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 
 import sharp from 'sharp';
@@ -41,3 +41,5 @@ await sharp(source).jpeg({ quality: 80 }).toFile(fileURLToPath(new URL('landscap
 await sharp(source).webp({ quality: 80 }).toFile(fileURLToPath(new URL('landscape-quality-80.webp', fixtureDirectory)));
 await sharp(alphaSource).toFile(fileURLToPath(new URL('alpha.png', fixtureDirectory)));
 await sharp(alphaSource).flatten({ background: '#ffffff' }).jpeg().toFile(fileURLToPath(new URL('alpha-white.jpeg', fixtureDirectory)));
+const orientationSource = await readFile(new URL('orientation-6.jpeg', fixtureDirectory));
+await sharp(orientationSource).autoOrient().jpeg().toFile(fileURLToPath(new URL('orientation-6-upright.jpeg', fixtureDirectory)));
