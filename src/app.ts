@@ -9,6 +9,7 @@ import { fetchRemoteImage, SourceFetchError } from './remote-image.js';
 interface AppDependencies {
   fetchImage?: typeof fetchRemoteImage;
   transform?: typeof transformImage;
+  maxConcurrentTransforms?: number;
 }
 
 export function buildApp(dependencies: AppDependencies = {}) {
@@ -27,7 +28,7 @@ export function buildApp(dependencies: AppDependencies = {}) {
   });
   const fetchImage = dependencies.fetchImage ?? fetchRemoteImage;
   const transform = dependencies.transform ?? transformImage;
-  const limiter = new TransformLimiter(Number.parseInt(process.env.MAX_CONCURRENT_TRANSFORMS ?? '4', 10));
+  const limiter = new TransformLimiter(dependencies.maxConcurrentTransforms ?? 4);
 
   app.get('/health', async () => ({ status: 'ok' }));
 

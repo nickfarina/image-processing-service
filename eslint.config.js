@@ -16,6 +16,7 @@ export default [
         DOMException: 'readonly',
         Response: 'readonly',
         fetch: 'readonly',
+        NodeJS: 'readonly',
         ReadableStreamDefaultReader: 'readonly',
       },
     },
