@@ -74,4 +74,13 @@ describe('transformImage', () => {
       }),
     ).rejects.toMatchObject({ code: 'image_processing_failed' });
   });
+
+  it('preserves alpha for WebP but composites it against white for JPEG', async () => {
+    const source = await fixture('alpha.png');
+    const webp = await transformImage(source, { url: new URL('https://images.example.com/alpha.png'), format: 'webp' });
+    const jpeg = await transformImage(source, { url: new URL('https://images.example.com/alpha.png'), format: 'jpeg' });
+
+    expect((await sharp(webp.body).metadata()).hasAlpha).toBe(true);
+    await expectSamePixels(jpeg.body, await fixture('alpha-white.jpeg'));
+  });
 });

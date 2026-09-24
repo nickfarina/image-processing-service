@@ -24,6 +24,9 @@ export async function transformImage(source: Buffer, options: ProcessOptions): P
     const sourceMetadata = await pipeline.metadata();
     const outputFormat = options.format ?? sourceMetadata.format;
 
+    // Normalize phone-camera EXIF orientation before every geometric operation.
+    pipeline.rotate();
+
     if (outputFormat === undefined || contentTypeForFormat(outputFormat) === undefined) {
       throw new ImageTransformError(
         'unsupported_source_format',
@@ -48,6 +51,8 @@ export async function transformImage(source: Buffer, options: ProcessOptions): P
     }
 
     if (outputFormat === 'jpeg') {
+      // JPEG does not support alpha; make the v1 compositing behavior explicit.
+      pipeline.flatten({ background: '#ffffff' });
       pipeline.jpeg({ quality: options.quality });
     } else if (outputFormat === 'png') {
       pipeline.png();

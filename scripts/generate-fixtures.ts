@@ -21,6 +21,11 @@ for (let y = 0; y < height; y += 1) {
 await mkdir(fixtureDirectory, { recursive: true });
 
 const source = await sharp(pixels, { raw: { width, height, channels: 3 } }).png().toBuffer();
+const alphaPixels = Buffer.from([
+  255, 0, 0, 255, 0, 255, 0, 128,
+  0, 0, 255, 0, 255, 255, 255, 255,
+]);
+const alphaSource = await sharp(alphaPixels, { raw: { width: 2, height: 2, channels: 4 } }).png().toBuffer();
 
 await sharp(source).toFile(fileURLToPath(new URL('landscape.png', fixtureDirectory)));
 await sharp(source)
@@ -34,3 +39,5 @@ await sharp(source)
   .toFile(fileURLToPath(new URL('landscape-fill-200x200.png', fixtureDirectory)));
 await sharp(source).jpeg({ quality: 80 }).toFile(fileURLToPath(new URL('landscape-quality-80.jpeg', fixtureDirectory)));
 await sharp(source).webp({ quality: 80 }).toFile(fileURLToPath(new URL('landscape-quality-80.webp', fixtureDirectory)));
+await sharp(alphaSource).toFile(fileURLToPath(new URL('alpha.png', fixtureDirectory)));
+await sharp(alphaSource).flatten({ background: '#ffffff' }).jpeg().toFile(fileURLToPath(new URL('alpha-white.jpeg', fixtureDirectory)));
