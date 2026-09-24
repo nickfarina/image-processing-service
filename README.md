@@ -54,6 +54,7 @@ Errors use this stable JSON contract:
 - Source downloads time out after 10 seconds, allow at most five redirects, and are capped at 10 MB.
 - Input images are capped at 40 million decoded pixels.
 - Unsupported, corrupt, non-image, and failed upstream content return controlled errors.
+- Request logs retain the route and method but redact query strings, which can contain signed source URLs.
 
 This is intentionally a URL-only v1: it has no uploads, authentication, persistent cache, or asynchronous processing.
 

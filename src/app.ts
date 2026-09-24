@@ -1,6 +1,7 @@
 import { transformImage, ImageTransformError } from './image-transform.js';
 import Fastify from 'fastify';
 
+import { redactQueryString } from './logging.js';
 import { parseProcessOptions, RequestValidationError } from './process-options.js';
 import { fetchRemoteImage, SourceFetchError } from './remote-image.js';
 
@@ -10,7 +11,19 @@ interface AppDependencies {
 }
 
 export function buildApp(dependencies: AppDependencies = {}) {
-  const app = Fastify({ logger: true });
+  const app = Fastify({
+    logger: {
+      level: process.env.LOG_LEVEL ?? 'info',
+      serializers: {
+        req(request) {
+          return {
+            method: request.method,
+            url: redactQueryString(request.url),
+          };
+        },
+      },
+    },
+  });
   const fetchImage = dependencies.fetchImage ?? fetchRemoteImage;
   const transform = dependencies.transform ?? transformImage;
 
