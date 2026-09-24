@@ -32,6 +32,8 @@ curl -i http://localhost:3000/health
 | `format` | Optional `jpeg`, `png`, or `webp`. Defaults to the supported source format. |
 | `quality` | Optional 1–100 for JPEG/WebP output. |
 
+If `quality` is supplied without `format`, it applies only when the detected source format is JPEG or WebP; PNG sources return `invalid_quality_format`.
+
 ```sh
 curl --get --data-urlencode 'url=https://httpbin.org/image/jpeg' \
   --data-urlencode 'width=800' --data-urlencode 'height=600' \
@@ -55,6 +57,7 @@ Errors use this stable JSON contract:
 - Input images are capped at 40 million decoded pixels.
 - At most four image transformations run concurrently by default (`MAX_CONCURRENT_TRANSFORMS` configures this); excess work receives `429`.
 - Unsupported, corrupt, non-image, and failed upstream content return controlled errors.
+- Animated formats and SVG are not preserved as v1 default outputs; request JPEG, PNG, or WebP conversion where supported.
 - Request logs retain the route and method but redact query strings, which can contain signed source URLs.
 
 This is intentionally a URL-only v1: it has no uploads, authentication, persistent cache, or asynchronous processing.
