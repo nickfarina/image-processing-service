@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it } from 'vitest';
 
 import { buildApp } from '../src/app.js';
+import { SourceFetchError } from '../src/remote-image.js';
 
 describe('GET /process', () => {
   const apps: ReturnType<typeof buildApp>[] = [];
@@ -21,8 +22,10 @@ describe('GET /process', () => {
     });
   });
 
-  it('acknowledges valid requests until processing is added', async () => {
-    const app = buildApp();
+  it('passes through a fetched image while transformations are pending', async () => {
+    const app = buildApp({
+      fetchImage: async () => ({ body: Buffer.from('image-data'), contentType: 'image/png' }),
+    });
     apps.push(app);
 
     const response = await app.inject({
@@ -30,11 +33,29 @@ describe('GET /process', () => {
       url: '/process?url=https://images.example.com/photo.jpg&width=500',
     });
 
-    expect(response.statusCode).toBe(501);
+    expect(response.statusCode).toBe(200);
+    expect(response.headers['content-type']).toContain('image/png');
+    expect(response.body).toBe('image-data');
+  });
+
+  it('returns a structured source-fetch error', async () => {
+    const app = buildApp({
+      fetchImage: async () => {
+        throw new SourceFetchError(400, 'source_not_public', 'The source URL must resolve to a public address.');
+      },
+    });
+    apps.push(app);
+
+    const response = await app.inject({
+      method: 'GET',
+      url: '/process?url=https://images.example.com/photo.jpg',
+    });
+
+    expect(response.statusCode).toBe(400);
     expect(response.json()).toEqual({
       error: {
-        code: 'processing_not_available',
-        message: 'Image processing is not available yet.',
+        code: 'source_not_public',
+        message: 'The source URL must resolve to a public address.',
       },
     });
   });

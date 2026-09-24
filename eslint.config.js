@@ -11,6 +11,11 @@ export default [
       globals: {
         process: 'readonly',
         URL: 'readonly',
+        Buffer: 'readonly',
+        AbortSignal: 'readonly',
+        DOMException: 'readonly',
+        Response: 'readonly',
+        ReadableStreamDefaultReader: 'readonly',
       },
     },
     plugins: {

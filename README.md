@@ -24,8 +24,9 @@ curl -i http://localhost:3000/health
 
 `GET /process` will accept a public image `url` and optional `width`, `height`,
 `format` (`jpeg`, `png`, or `webp`), `quality` (1–100 for JPEG/WebP), and
-`crop=fill`. Validation is available now; fetching and transformations are added
-in later milestones.
+`crop=fill`. The service currently fetches and returns source images after
+validating that the URL resolves only to public network addresses. Transformations
+are added in later milestones.
 
 ## Checks
 
