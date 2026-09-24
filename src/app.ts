@@ -2,6 +2,7 @@ import { transformImage, ImageTransformError } from './image-transform.js';
 import Fastify from 'fastify';
 
 import { redactQueryString } from './logging.js';
+import { TransformCapacityError, TransformLimiter } from './transform-limiter.js';
 import { parseProcessOptions, RequestValidationError } from './process-options.js';
 import { fetchRemoteImage, SourceFetchError } from './remote-image.js';
 
@@ -26,6 +27,7 @@ export function buildApp(dependencies: AppDependencies = {}) {
   });
   const fetchImage = dependencies.fetchImage ?? fetchRemoteImage;
   const transform = dependencies.transform ?? transformImage;
+  const limiter = new TransformLimiter(Number.parseInt(process.env.MAX_CONCURRENT_TRANSFORMS ?? '4', 10));
 
   app.get('/health', async () => ({ status: 'ok' }));
 
@@ -34,7 +36,7 @@ export function buildApp(dependencies: AppDependencies = {}) {
       const options = parseProcessOptions(request.query as Record<string, string | string[] | undefined>);
 
       const image = await fetchImage(options.url);
-      const transformed = await transform(image.body, options);
+      const transformed = await limiter.run(() => transform(image.body, options));
       return reply
         .header('cache-control', 'public, max-age=3600')
         .type(transformed.contentType)
@@ -53,6 +55,11 @@ export function buildApp(dependencies: AppDependencies = {}) {
       if (error instanceof ImageTransformError) {
         return reply.status(422).send({
           error: { code: error.code, message: error.message },
+        });
+      }
+      if (error instanceof TransformCapacityError) {
+        return reply.status(429).header('retry-after', '1').send({
+          error: { code: 'transform_capacity_exceeded', message: error.message },
         });
       }
       throw error;

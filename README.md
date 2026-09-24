@@ -53,6 +53,7 @@ Errors use this stable JSON contract:
 - Only public HTTP(S) destinations are allowed; DNS answers and redirects are revalidated to reduce SSRF risk.
 - Source downloads time out after 10 seconds, allow at most five redirects, and are capped at 10 MB.
 - Input images are capped at 40 million decoded pixels.
+- At most four image transformations run concurrently by default (`MAX_CONCURRENT_TRANSFORMS` configures this); excess work receives `429`.
 - Unsupported, corrupt, non-image, and failed upstream content return controlled errors.
 - Request logs retain the route and method but redact query strings, which can contain signed source URLs.
 
