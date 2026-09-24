@@ -1,4 +1,4 @@
-import { buildApp } from './app.js';
+import { buildApp } from './image-service.js';
 import { readRuntimeConfig } from './config.js';
 
 const config = readRuntimeConfig();

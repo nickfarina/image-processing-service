@@ -4,7 +4,7 @@ import { readFile } from 'node:fs/promises';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import { fetchRemoteImage } from '../src/remote-image.js';
-import { buildApp } from '../src/app.js';
+import { buildApp } from '../src/image-service.js';
 
 let baseUrl = '';
 const server = createServer(async (request, response) => {

@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { buildApp } from '../src/app.js';
+import { buildApp } from '../src/image-service.js';
 
 describe('GET /health', () => {
   const apps: ReturnType<typeof buildApp>[] = [];

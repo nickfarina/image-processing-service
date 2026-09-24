@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it } from 'vitest';
 
-import { buildApp } from '../src/app.js';
+import { buildApp } from '../src/image-service.js';
 import { readFile } from 'node:fs/promises';
 import { SourceFetchError } from '../src/remote-image.js';
 import { ImageTransformError } from '../src/image-transform.js';
