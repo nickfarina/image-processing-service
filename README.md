@@ -1,5 +1,7 @@
 # Image Processing Service
 
+[![CI](https://github.com/nickfarina/image-processing-service/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/nickfarina/image-processing-service/actions/workflows/ci.yml)
+
 A Cloudinary-style TypeScript service that safely fetches a public image URL and returns a transformed image.
 
 ## Requirements
