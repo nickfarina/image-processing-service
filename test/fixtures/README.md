@@ -42,6 +42,10 @@ The source is a 400×200 image: red on the left and blue on the right. Its stron
 
 `over-pixel-limit.svg` declares 50 million pixels and verifies the 40-million decoded-pixel safety limit.
 
+## Local upstream integration
+
+`test/local-upstream.test.ts` serves these fixtures from a test-only HTTP server. It verifies the real fetch path for redirects, non-image content, streamed download limits, and a complete `/process` request through fetch, transform, MIME, and cache-header response handling.
+
 ## Regeneration
 
 Run `npm run generate:fixtures` after intentionally changing fixture-generation behavior. Review generated binary changes together with the associated expectation/test updates; lossless PNG goldens are compared by decoded pixels, while JPEG/WebP are validated through format, metadata, and visual expectations rather than compressed bytes.

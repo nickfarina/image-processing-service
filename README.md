@@ -86,6 +86,8 @@ docker run --rm -p 3000:3000 image-service
 npm run generate:fixtures
 ```
 
+The local-upstream integration suite is included in `npm test`; it validates redirect, non-image, and download-limit behavior without relying on external hosts.
+
 ## Future enhancements
 
 - Video thumbnail endpoint using FFmpeg

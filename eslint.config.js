@@ -15,6 +15,7 @@ export default [
         AbortSignal: 'readonly',
         DOMException: 'readonly',
         Response: 'readonly',
+        fetch: 'readonly',
         ReadableStreamDefaultReader: 'readonly',
       },
     },
