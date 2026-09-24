@@ -22,6 +22,30 @@ Check readiness:
 curl -i http://localhost:3000/health
 ```
 
+## Hosted deployment
+
+A public Vercel deployment is available at [`https://ours-kappa.vercel.app`](https://ours-kappa.vercel.app). Check it with:
+
+```sh
+curl -i https://ours-kappa.vercel.app/health
+```
+
+Example: resize and convert Robert Havell Jr.'s [View of the Hudson River](https://en.wikipedia.org/wiki/Hudson_River#/media/File:View_of_the_Hudson_River-Robert_Havell_Jr-1866.jpg). The API uses Wikimedia's direct file URL because the Wikipedia media link itself is an HTML page:
+
+```sh
+curl --get \
+  --data-urlencode 'url=https://commons.wikimedia.org/wiki/Special:FilePath/View_of_the_Hudson_River-Robert_Havell_Jr-1866.jpg' \
+  --data-urlencode 'width=800' \
+  --data-urlencode 'height=600' \
+  --data-urlencode 'crop=fill' \
+  --data-urlencode 'format=webp' \
+  --data-urlencode 'quality=80' \
+  -o hudson-river.webp \
+  https://ours-kappa.vercel.app/process
+```
+
+The result is a `800x600` WebP image saved as `hudson-river.webp`.
+
 ## API
 
 `GET /process` accepts these query parameters:
