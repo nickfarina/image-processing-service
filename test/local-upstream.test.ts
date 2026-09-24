@@ -4,6 +4,7 @@ import { readFile } from 'node:fs/promises';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 
 import { fetchRemoteImage } from '../src/remote-image.js';
+import { buildApp } from '../src/app.js';
 
 let baseUrl = '';
 const server = createServer(async (request, response) => {
@@ -39,5 +40,14 @@ describe('local upstream integration', () => {
   });
   it('enforces streamed response limits', async () => {
     await expect(fetchRemoteImage(new URL(`${baseUrl}/oversize`), { fetchImplementation: localFetch, resolveHost: publicResolver, maxBytes: 16 })).rejects.toMatchObject({ statusCode: 413 });
+  });
+  it('processes a fetched upstream image end to end', async () => {
+    const app = buildApp({ fetchImage: (url) => fetchRemoteImage(url, { fetchImplementation: localFetch, resolveHost: publicResolver }) });
+    try {
+      const response = await app.inject({ method: 'GET', url: `/process?url=${encodeURIComponent(`${baseUrl}/redirect`)}&width=100&height=100&format=webp&quality=80` });
+      expect(response.statusCode).toBe(200);
+      expect(response.headers['content-type']).toContain('image/webp');
+      expect(response.headers['cache-control']).toBe('public, max-age=3600');
+    } finally { await app.close(); }
   });
 });
