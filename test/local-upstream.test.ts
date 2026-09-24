@@ -17,6 +17,12 @@ const server = createServer(async (request, response) => {
     response.writeHead(200, { 'content-type': 'text/html' }); response.end('<h1>no</h1>');
   } else if (request.url === '/oversize') {
     response.writeHead(200, { 'content-type': 'image/png' }); response.end(Buffer.alloc(32));
+  } else if (request.url === '/loop') {
+    response.writeHead(302, { location: '/loop' }); response.end();
+  } else if (request.url === '/slow') {
+    setTimeout(() => { response.writeHead(200, { 'content-type': 'image/png' }); response.end('slow'); }, 100);
+  } else if (request.url === '/error') {
+    response.writeHead(500); response.end();
   } else { response.writeHead(500); response.end(); }
 });
 
@@ -40,6 +46,21 @@ describe('local upstream integration', () => {
   });
   it('enforces streamed response limits', async () => {
     await expect(fetchRemoteImage(new URL(`${baseUrl}/oversize`), { fetchImplementation: localFetch, resolveHost: publicResolver, maxBytes: 16 })).rejects.toMatchObject({ statusCode: 413 });
+  });
+  it('stops a redirect loop at the configured limit', async () => {
+    await expect(fetchRemoteImage(new URL(`${baseUrl}/loop`), {
+      fetchImplementation: localFetch, resolveHost: publicResolver, maxRedirects: 1,
+    })).rejects.toMatchObject({ statusCode: 502, code: 'too_many_redirects' });
+  });
+  it('maps an upstream error response to a source error', async () => {
+    await expect(fetchRemoteImage(new URL(`${baseUrl}/error`), {
+      fetchImplementation: localFetch, resolveHost: publicResolver,
+    })).rejects.toMatchObject({ statusCode: 502, code: 'source_response_error' });
+  });
+  it('maps a slow upstream response to a timeout', async () => {
+    await expect(fetchRemoteImage(new URL(`${baseUrl}/slow`), {
+      fetchImplementation: localFetch, resolveHost: publicResolver, timeoutMs: 10,
+    })).rejects.toMatchObject({ statusCode: 504, code: 'source_timeout' });
   });
   it('processes a fetched upstream image end to end', async () => {
     const app = buildApp({ fetchImage: (url) => fetchRemoteImage(url, { fetchImplementation: localFetch, resolveHost: publicResolver }) });
