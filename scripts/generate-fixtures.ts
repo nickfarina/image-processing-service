@@ -28,3 +28,9 @@ await sharp(source)
   .png()
   .toFile(fileURLToPath(new URL('landscape-fit-200x200.png', fixtureDirectory)));
 await sharp(source).resize({ width: 100 }).png().toFile(fileURLToPath(new URL('landscape-width-100.png', fixtureDirectory)));
+await sharp(source)
+  .resize({ width: 200, height: 200, fit: 'cover', position: 'centre' })
+  .png()
+  .toFile(fileURLToPath(new URL('landscape-fill-200x200.png', fixtureDirectory)));
+await sharp(source).jpeg({ quality: 80 }).toFile(fileURLToPath(new URL('landscape-quality-80.jpeg', fixtureDirectory)));
+await sharp(source).webp({ quality: 80 }).toFile(fileURLToPath(new URL('landscape-quality-80.webp', fixtureDirectory)));

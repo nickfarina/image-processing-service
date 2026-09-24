@@ -41,4 +41,29 @@ describe('transformImage', () => {
 
     await expectSamePixels(output.body, await fixture('landscape-width-100.png'));
   });
+
+  it('center-crops when fill is requested', async () => {
+    const output = await transformImage(await fixture('landscape.png'), {
+      url: new URL('https://images.example.com/landscape.png'),
+      width: 200,
+      height: 200,
+      crop: 'fill',
+    });
+
+    await expectSamePixels(output.body, await fixture('landscape-fill-200x200.png'));
+  });
+
+  it.each(['jpeg', 'webp'] as const)('converts to %s and applies quality', async (format) => {
+    const output = await transformImage(await fixture('landscape.png'), {
+      url: new URL('https://images.example.com/landscape.png'),
+      format,
+      quality: 80,
+    });
+    const metadata = await sharp(output.body).metadata();
+
+    expect(metadata.format).toBe(format);
+    expect(metadata.width).toBe(400);
+    expect(metadata.height).toBe(200);
+    expect(output.contentType).toBe(`image/${format}`);
+  });
 });

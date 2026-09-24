@@ -21,13 +21,38 @@ export class ImageTransformError extends Error {
 export async function transformImage(source: Buffer, options: ProcessOptions): Promise<TransformedImage> {
   try {
     const pipeline = sharp(source, { limitInputPixels: MAX_INPUT_PIXELS });
+    const sourceMetadata = await pipeline.metadata();
+    const outputFormat = options.format ?? sourceMetadata.format;
+
+    if (outputFormat === undefined || contentTypeForFormat(outputFormat) === undefined) {
+      throw new ImageTransformError(
+        'unsupported_source_format',
+        'The source image format cannot be returned without conversion.',
+      );
+    }
+
+    if (options.quality !== undefined && outputFormat !== 'jpeg' && outputFormat !== 'webp') {
+      throw new ImageTransformError(
+        'invalid_quality_format',
+        'quality is supported only with JPEG or WebP output.',
+      );
+    }
 
     if (options.width !== undefined || options.height !== undefined) {
       pipeline.resize({
         width: options.width,
         height: options.height,
-        fit: 'inside',
+        fit: options.crop === 'fill' ? 'cover' : 'inside',
+        position: 'centre',
       });
+    }
+
+    if (outputFormat === 'jpeg') {
+      pipeline.jpeg({ quality: options.quality });
+    } else if (outputFormat === 'png') {
+      pipeline.png();
+    } else if (outputFormat === 'webp') {
+      pipeline.webp({ quality: options.quality });
     }
 
     const { data, info } = await pipeline.toBuffer({ resolveWithObject: true });

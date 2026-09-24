@@ -26,8 +26,9 @@ curl -i http://localhost:3000/health
 `format` (`jpeg`, `png`, or `webp`), `quality` (1–100 for JPEG/WebP), and
 `crop=fill`. The service currently fetches and returns source images after
 validating that the URL resolves only to public network addresses. Resize requests
-preserve aspect ratio and fit within both requested dimensions. Format conversion,
-quality, and crop behavior are added in later milestones.
+preserve aspect ratio and fit within both requested dimensions; `crop=fill` uses a
+center crop. JPEG, PNG, and WebP output are supported, and `quality` applies to
+JPEG/WebP output.
 
 ## Checks
 

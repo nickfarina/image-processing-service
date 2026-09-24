@@ -22,7 +22,10 @@ export function buildApp(dependencies: AppDependencies = {}) {
 
       const image = await fetchImage(options.url);
       const transformed = await transform(image.body, options);
-      return reply.type(transformed.contentType).send(transformed.body);
+      return reply
+        .header('cache-control', 'public, max-age=3600')
+        .type(transformed.contentType)
+        .send(transformed.body);
     } catch (error) {
       if (error instanceof RequestValidationError) {
         return reply.status(400).send({
