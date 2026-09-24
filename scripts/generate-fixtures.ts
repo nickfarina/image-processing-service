@@ -40,6 +40,7 @@ await sharp(source)
 await sharp(source).jpeg({ quality: 80 }).toFile(fileURLToPath(new URL('landscape-quality-80.jpeg', fixtureDirectory)));
 await sharp(source).webp({ quality: 80 }).toFile(fileURLToPath(new URL('landscape-quality-80.webp', fixtureDirectory)));
 await sharp(alphaSource).toFile(fileURLToPath(new URL('alpha.png', fixtureDirectory)));
+await sharp(source).resize({ width: 201, height: 201, fit: 'inside' }).png().toFile(fileURLToPath(new URL('landscape-odd-fit-201.png', fixtureDirectory)));
 await sharp(alphaSource).flatten({ background: '#ffffff' }).jpeg().toFile(fileURLToPath(new URL('alpha-white.jpeg', fixtureDirectory)));
 const orientationSource = await readFile(new URL('orientation-6.jpeg', fixtureDirectory));
 await sharp(orientationSource).autoOrient().jpeg().toFile(fileURLToPath(new URL('orientation-6-upright.jpeg', fixtureDirectory)));

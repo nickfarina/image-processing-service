@@ -42,6 +42,13 @@ describe('transformImage', () => {
     await expectSamePixels(output.body, await fixture('landscape-width-100.png'));
   });
 
+  it('rounds odd fit bounds deterministically without exceeding either bound', async () => {
+    const output = await transformImage(await fixture('landscape.png'), {
+      url: new URL('https://images.example.com/landscape.png'), width: 201, height: 201,
+    });
+    await expectSamePixels(output.body, await fixture('landscape-odd-fit-201.png'));
+  });
+
   it('center-crops when fill is requested', async () => {
     const output = await transformImage(await fixture('landscape.png'), {
       url: new URL('https://images.example.com/landscape.png'),

@@ -10,6 +10,7 @@ The source is a 400×200 image: red on the left and blue on the right. Its stron
 | --- | --- | --- |
 | ![Landscape source](landscape.png) | `width=200&height=200` | ![Fit result](landscape-fit-200x200.png) — `200×100`; fits within bounds without stretching. |
 | ![Landscape source](landscape.png) | `width=100` | ![Width result](landscape-width-100.png) — `100×50`; one-axis proportional resize. |
+| ![Landscape source](landscape.png) | `width=201&height=201` | [`landscape-odd-fit-201.png`](landscape-odd-fit-201.png) — deterministic odd-pixel rounding. |
 | ![Landscape source](landscape.png) | `width=200&height=200&crop=fill` | ![Fill result](landscape-fill-200x200.png) — exact `200×200` centered crop containing both color regions. |
 | ![Landscape source](landscape.png) | `format=jpeg&quality=80` | [`landscape-quality-80.jpeg`](landscape-quality-80.jpeg) — valid JPEG output. |
 | ![Landscape source](landscape.png) | `format=webp&quality=80` | [`landscape-quality-80.webp`](landscape-quality-80.webp) — valid WebP output. |
