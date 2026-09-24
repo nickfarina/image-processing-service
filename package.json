@@ -1,0 +1,32 @@
+{
+  "name": "image-processing-service",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A safe, URL-based image transformation service.",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/server.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "fastify": "^5.5.0",
+    "sharp": "^0.34.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.30",
+    "@typescript-eslint/eslint-plugin": "^8.35.0",
+    "@typescript-eslint/parser": "^8.35.0",
+    "eslint": "^9.30.0",
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3",
+    "vitest": "^3.2.4"
+  }
+}

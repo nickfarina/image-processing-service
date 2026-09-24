@@ -1,0 +1,37 @@
+# Image Processing Service
+
+A TypeScript image-processing service. The first milestone provides a health endpoint; image transformation support is added incrementally in subsequent commits.
+
+## Requirements
+
+- Node.js 22 or newer
+- Docker (optional)
+
+## Run locally
+
+```sh
+npm install
+npm run dev
+```
+
+Check readiness:
+
+```sh
+curl -i http://localhost:3000/health
+```
+
+## Checks
+
+```sh
+npm run typecheck
+npm run lint
+npm test
+npm run build
+```
+
+## Run with Docker
+
+```sh
+docker build -t image-service .
+docker run --rm -p 3000:3000 image-service
+```
