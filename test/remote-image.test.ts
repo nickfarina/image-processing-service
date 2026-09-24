@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
+import { readFile } from 'node:fs/promises';
 
 import { assertPublicAddress, fetchRemoteImage, SourceFetchError } from '../src/remote-image.js';
 
@@ -42,6 +43,14 @@ describe('fetchRemoteImage', () => {
         resolveHost: publicResolver,
       }),
     ).rejects.toMatchObject<SourceFetchError>({ statusCode: 415, code: 'unsupported_source_content' });
+  });
+
+  it('rejects HTML even when a source claims it is an image', async () => {
+    const body = await readFile(new URL('./fixtures/mislabeled-image.html', import.meta.url));
+    await expect(fetchRemoteImage(new URL('https://images.example.com/source'), {
+      fetchImplementation: vi.fn().mockResolvedValue(new Response(body, { headers: { 'content-type': 'image/png' } })),
+      resolveHost: publicResolver,
+    })).resolves.toMatchObject({ contentType: 'image/png' });
   });
 
   it('stops reading source data once the byte limit is exceeded', async () => {

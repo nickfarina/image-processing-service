@@ -82,6 +82,12 @@ describe('transformImage', () => {
     ).rejects.toMatchObject({ code: 'image_processing_failed' });
   });
 
+  it('returns a controlled error for HTML mislabeled as an image', async () => {
+    await expect(transformImage(await fixture('mislabeled-image.html'), {
+      url: new URL('https://images.example.com/mislabeled.png'),
+    })).rejects.toMatchObject({ code: 'image_processing_failed' });
+  });
+
   it('preserves alpha for WebP but composites it against white for JPEG', async () => {
     const source = await fixture('alpha.png');
     const webp = await transformImage(source, { url: new URL('https://images.example.com/alpha.png'), format: 'webp' });

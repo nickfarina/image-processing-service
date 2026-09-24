@@ -32,6 +32,8 @@ The source is a 400×200 image: red on the left and blue on the right. Its stron
 
 `corrupt-image.bin` is deliberately invalid image data. It must return the controlled `422 image_processing_failed` response, never an internal stack trace.
 
+`mislabeled-image.html` and `unsupported.svg` are source-server fixtures for content-type and unsupported-format error paths.
+
 ## Regeneration
 
 Run `npm run generate:fixtures` after intentionally changing fixture-generation behavior. Review generated binary changes together with the associated expectation/test updates; lossless PNG goldens are compared by decoded pixels, while JPEG/WebP are validated through format, metadata, and visual expectations rather than compressed bytes.
