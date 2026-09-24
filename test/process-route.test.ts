@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it } from 'vitest';
 
 import { buildApp } from '../src/app.js';
+import { readFile } from 'node:fs/promises';
 import { SourceFetchError } from '../src/remote-image.js';
 
 describe('GET /process', () => {
@@ -24,18 +25,21 @@ describe('GET /process', () => {
 
   it('passes through a fetched image while transformations are pending', async () => {
     const app = buildApp({
-      fetchImage: async () => ({ body: Buffer.from('image-data'), contentType: 'image/png' }),
+      fetchImage: async () => ({
+        body: await readFile(new URL('./fixtures/landscape.png', import.meta.url)),
+        contentType: 'image/png',
+      }),
     });
     apps.push(app);
 
     const response = await app.inject({
       method: 'GET',
-      url: '/process?url=https://images.example.com/photo.jpg&width=500',
+      url: '/process?url=https://images.example.com/photo.jpg&width=100',
     });
 
     expect(response.statusCode).toBe(200);
     expect(response.headers['content-type']).toContain('image/png');
-    expect(response.body).toBe('image-data');
+    expect((await (await import('sharp')).default(response.rawPayload).metadata()).width).toBe(100);
   });
 
   it('returns a structured source-fetch error', async () => {
