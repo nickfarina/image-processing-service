@@ -20,6 +20,13 @@ Check readiness:
 curl -i http://localhost:3000/health
 ```
 
+## API (in progress)
+
+`GET /process` will accept a public image `url` and optional `width`, `height`,
+`format` (`jpeg`, `png`, or `webp`), `quality` (1–100 for JPEG/WebP), and
+`crop=fill`. Validation is available now; fetching and transformations are added
+in later milestones.
+
 ## Checks
 
 ```sh

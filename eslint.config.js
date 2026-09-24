@@ -10,6 +10,7 @@ export default [
       parser: tsParser,
       globals: {
         process: 'readonly',
+        URL: 'readonly',
       },
     },
     plugins: {
