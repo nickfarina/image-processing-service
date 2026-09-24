@@ -105,6 +105,18 @@ describe('transformImage', () => {
     })).rejects.toMatchObject({ code: 'image_processing_failed' });
   });
 
+  it('rejects unsupported SVG output without an explicit supported format', async () => {
+    await expect(transformImage(await fixture('unsupported.svg'), {
+      url: new URL('https://images.example.com/source.svg'),
+    })).rejects.toMatchObject({ code: 'unsupported_source_format' });
+  });
+
+  it('rejects images whose decoded dimensions exceed the pixel limit', async () => {
+    await expect(transformImage(await fixture('over-pixel-limit.svg'), {
+      url: new URL('https://images.example.com/large.svg'), format: 'png',
+    })).rejects.toMatchObject({ code: 'image_processing_failed' });
+  });
+
   it('preserves alpha for WebP but composites it against white for JPEG', async () => {
     const source = await fixture('alpha.png');
     const webp = await transformImage(source, { url: new URL('https://images.example.com/alpha.png'), format: 'webp' });
